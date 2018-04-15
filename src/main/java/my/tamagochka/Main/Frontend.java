@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Frontend extends HttpServlet {
 
@@ -14,6 +16,11 @@ public class Frontend extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse responce)
             throws ServletException, IOException {
+        Map<String, Object> pageVars = createPageVarsMap(request);
+        pageVars.put("message", "");
+        responce.getWriter().println(PageGenerator.instance().getPage("page.html", pageVars));
+        responce.setContentType("text/html;charset=utf-8");
+        responce.setStatus(HttpServletResponse.SC_OK);
 
     }
 
@@ -22,6 +29,16 @@ public class Frontend extends HttpServlet {
                        HttpServletResponse responce)
             throws ServletException, IOException {
 
+    }
+
+    private static Map<String, Object> createPageVarsMap(HttpServletRequest request) {
+        Map<String, Object> pageVars = new HashMap<>();
+        pageVars.put("metod", request.getMethod());
+        pageVars.put("URL", request.getRequestURL().toString());
+        pageVars.put("pathInfo", request.getPathInfo());
+        pageVars.put("sessionId", request.getSession().getId());
+        pageVars.put("parameters", request.getParameterMap().toString());
+        return pageVars;
     }
 
 }
