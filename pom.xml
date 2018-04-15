@@ -16,6 +16,7 @@
     </properties>
 
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -33,41 +34,38 @@
             </plugin>
 
             <plugin>
-                
-
-
-
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.0.2</version>
-                <!--
-                                <executions>
-                                    <execution>
-                                        <id>copy-resources</id>
-                                        <phase>compile</phase>
-                                        <goals>
-                                            <goal>copy-resources</goal>
-                                        </goals>
-                                        <configuration>
-                                            <outputDirectory>${project.build.directory}/resources</outputDirectory>
-                                            <resources>
-                                                <resource>
-                                                    <directory>${project.basedir}/src/main/resources</directory>
-                                                </resource>
-                                            </resources>
-                                        </configuration>
-                                    </execution>
-                                </executions>
-                -->
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
+
+
+
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>9.4.9.v20180320</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.6.v20170531</version>
+            <version>9.4.9.v20180320</version>
         </dependency>
     </dependencies>
 
