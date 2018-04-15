@@ -28,12 +28,21 @@ public class Frontend extends HttpServlet {
     public void doPost(HttpServletRequest request,
                        HttpServletResponse responce)
             throws ServletException, IOException {
-
+        Map<String, Object> pageVars = createPageVarsMap(request);
+        String message = request.getParameter("message");
+        responce.setContentType("text/html;charset=utf-8");
+        if(message == null || message.isEmpty()) {
+            responce.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } else {
+            responce.setStatus(HttpServletResponse.SC_OK);
+        }
+        pageVars.put("message", message == null ? "" : message);
+        responce.getWriter().println(PageGenerator.instance().getPage("page.html", pageVars));
     }
 
     private static Map<String, Object> createPageVarsMap(HttpServletRequest request) {
         Map<String, Object> pageVars = new HashMap<>();
-        pageVars.put("metod", request.getMethod());
+        pageVars.put("method", request.getMethod());
         pageVars.put("URL", request.getRequestURL().toString());
         pageVars.put("pathInfo", request.getPathInfo());
         pageVars.put("sessionId", request.getSession().getId());

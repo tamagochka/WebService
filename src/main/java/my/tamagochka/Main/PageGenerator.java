@@ -1,5 +1,6 @@
 package my.tamagochka.Main;
 
+import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -26,7 +27,7 @@ public class PageGenerator {
     public String getPage(String fileName, Map<String, Object> data) {
         Writer stream = new StringWriter();
         try {
-            Template template = cfg.getTemplate(HTML_DIR + File.separator + fileName);
+            Template template = cfg.getTemplate(/*HTML_DIR + File.separator + */fileName);
             template.process(data, stream);
         } catch(IOException | TemplateException e) {
             e.printStackTrace();
@@ -34,5 +35,12 @@ public class PageGenerator {
         return stream.toString();
     }
 
-    private PageGenerator() {cfg = new Configuration(Configuration.VERSION_2_3_28);}
+    private PageGenerator(){
+        cfg = new Configuration(Configuration.VERSION_2_3_28);
+        try {
+            cfg.setTemplateLoader(new FileTemplateLoader(new File(HTML_DIR)));
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
