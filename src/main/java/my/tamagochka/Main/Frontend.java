@@ -16,14 +16,21 @@ public class Frontend extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse responce)
             throws ServletException, IOException {
-        Map<String, Object> pageVars = createPageVarsMap(request);
+
+        responce.getWriter().println(request.getParameter("key"));
+        responce.setStatus(HttpServletResponse.SC_OK);
+
+
+
+/*        Map<String, Object> pageVars = createPageVarsMap(request);
         pageVars.put("message", "");
         responce.getWriter().println(PageGenerator.instance().getPage("page.html", pageVars));
         responce.setContentType("text/html;charset=utf-8");
-        responce.setStatus(HttpServletResponse.SC_OK);
+        responce.setStatus(HttpServletResponse.SC_OK);*/
 
     }
 
+    /*
     @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse responce)
@@ -49,5 +56,5 @@ public class Frontend extends HttpServlet {
         pageVars.put("parameters", request.getParameterMap().toString());
         return pageVars;
     }
-
+    */
 }
