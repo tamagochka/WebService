@@ -13,6 +13,7 @@ public class Main {
         server.setHandler(context);
         context.addServlet(new ServletHolder(frontend), "/*");
 
+
         server.start();
         server.join();
     }
