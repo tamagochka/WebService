@@ -14,7 +14,7 @@ public class Main {
         context.addServlet(new ServletHolder(frontend), "/mirror");
 
         server.start();
-        System.out.println("Server started");
+        java.util.logging.Logger.getGlobal().info("Server started");
         server.join();
     }
 }
