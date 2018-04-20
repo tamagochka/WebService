@@ -13,13 +13,16 @@ public class AccountService {
         sessionToProfile = new HashMap<>();
     }
 
-    public void addNewUser(UserProfile userProfile) { loginToProfile.put(userProfile.getLogin(), userProfile); }
-    public UserProfile getUserByLogin(String login) { return loginToProfile.get(login); }
-    public UserProfile getUserBySession(String session) { return sessionToProfile.get(session); }
+    public void addNewUser(UserProfile userProfile) { loginToProfile.put(userProfile.getLogin(), userProfile); } // added new user to map loginToProfile
 
-    public void addSession(String session, UserProfile userProfile) {
+    public UserProfile getUserByLogin(String login) { return loginToProfile.get(login); } // returned user profile by login
+
+    public UserProfile getUserBySession(String session) { return sessionToProfile.get(session); } // returned user profile by session id
+
+    public void addSession(String session, UserProfile userProfile) { // register new session
         sessionToProfile.put(session, userProfile);
     }
 
-    public void deleteSession(String session) { sessionToProfile.remove(session); }
+    public void deleteSession(String session) { sessionToProfile.remove(session); } // remove old session
+
 }
