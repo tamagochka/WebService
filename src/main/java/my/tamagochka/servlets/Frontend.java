@@ -1,4 +1,6 @@
-package my.tamagochka.Main;
+package my.tamagochka.servlets;
+
+import my.tamagochka.main.PageGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +23,6 @@ public class Frontend extends HttpServlet {
         responce.getWriter().println(PageGenerator.instance().getPage("page.html", pageVars));
         responce.setContentType("text/html;charset=utf-8");
         responce.setStatus(HttpServletResponse.SC_OK);
-
     }
 
     @Override
@@ -35,9 +36,9 @@ public class Frontend extends HttpServlet {
             responce.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             responce.setStatus(HttpServletResponse.SC_OK);
+            pageVars.put("message", message == null ? "" : message);
+            responce.getWriter().println(PageGenerator.instance().getPage("page.html", pageVars));
         }
-        pageVars.put("message", message == null ? "" : message);
-        responce.getWriter().println(PageGenerator.instance().getPage("page.html", pageVars));
     }
 
     private static Map<String, Object> createPageVarsMap(HttpServletRequest request) {

@@ -1,4 +1,4 @@
-package my.tamagochka.Main;
+package my.tamagochka.main;
 
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;

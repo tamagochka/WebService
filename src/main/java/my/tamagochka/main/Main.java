@@ -1,5 +1,6 @@
-package my.tamagochka.Main;
+package my.tamagochka.main;
 
+import my.tamagochka.servlets.Frontend;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
