@@ -65,7 +65,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>my.tamagochka.Main.Main</mainClass>
+                            <mainClass>my.tamagochka.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
