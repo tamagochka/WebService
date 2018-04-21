@@ -35,7 +35,7 @@ public class PageGenerator {
         return stream.toString();
     }
 
-    private PageGenerator(){
+    private PageGenerator() {
         cfg = new Configuration(Configuration.VERSION_2_3_28);
         try {
             cfg.setTemplateLoader(new FileTemplateLoader(new File(HTML_DIR)));
