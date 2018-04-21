@@ -1,6 +1,7 @@
 package my.tamagochka.servlets;
 
 import my.tamagochka.accounts.AccountService;
+import my.tamagochka.accounts.UserProfile;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,20 +15,9 @@ public class UsersServlet extends HttpServlet {
 
     public UsersServlet(AccountService accountService) { this.accountService = accountService; }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // todo: home work
-    }
-
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // todo: home work
+        String login = request.getParameter("login");
+        String pass = request.getParameter("password");
+        accountService.addNewUser(new UserProfile(login, pass, "email"));
     }
-
-    public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // todo: home work
-    }
-
-    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // todo: home work
-    }
-
 }
