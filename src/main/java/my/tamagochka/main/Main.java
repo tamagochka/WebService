@@ -14,7 +14,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        AccountService accountService = new AccountService();
+/*        AccountService accountService = new AccountService();
         accountService.addNewUser(new UserProfile("admin"));
         accountService.addNewUser(new UserProfile("test"));
 
@@ -31,6 +31,19 @@ public class Main {
         server.setHandler(handlerList);
 
         server.start();
-        server.join();
+        server.join(); */
+        DBService dbService = new DBService();
+        dbService.printConnectInfo();
+        try {
+            long userId = dbService.addUser("test");
+            System.out.println("Added user id: " + userId);
+
+            UsersDataSet dataSet = dbService.getUser(userId);
+            System.out.println("User data set: " + dataSet);
+
+            dbService.cleanUp();
+        } catch(DBException e) {
+            e.printStackTrace();
+        }
     }
 }
