@@ -1,5 +1,8 @@
 package my.tamagochka.dbService.DAO;
 
+import my.tamagochka.dbService.dataSets.UsersDataSet;
+import my.tamagochka.dbService.executor.Executor;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
