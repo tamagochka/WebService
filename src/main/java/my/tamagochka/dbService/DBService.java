@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBService {
+
     private final Connection connection;
 
     public DBService() {this.connection = getH2Connection(); }
@@ -70,7 +71,7 @@ public class DBService {
                     .append("db_example?")
                     .append("user=test&")
                     .append("password=test");
-            System.out.printf(url);
+            System.out.print(url);
             return DriverManager.getConnection(url.toString());
         } catch(SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
