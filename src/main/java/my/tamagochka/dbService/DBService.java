@@ -13,7 +13,10 @@ public class DBService {
 
     private final Connection connection;
 
-    public DBService() {this.connection = getH2Connection(); }
+    public DBService() {
+        this.connection = getH2Connection();
+        //this.connection = getMySQLConnection();
+    }
 
     public UsersDataSet getUser(long id) throws DBException {
         try {
@@ -70,9 +73,9 @@ public class DBService {
                     .append("jdbc:mysql://")
                     .append("localhost:")
                     .append("3306/")
-                    .append("db_example?")
-                    .append("user=test&")
-                    .append("password=test");
+                    .append("db_example?serverTimezone=UTC&")
+                    .append("user=root&")
+                    .append("password=a1010a");
             System.out.print(url);
             return DriverManager.getConnection(url.toString());
         } catch(SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -87,10 +90,6 @@ public class DBService {
             String name = "test";
             String pass = "test";
 
-            JdbcDataSource ds = new JdbcDataSource();
-            ds.setURL(url);
-            ds.setUser(name);
-            ds.setPassword(pass);
             return DriverManager.getConnection(url, name, pass);
         } catch(SQLException e) {
             e.printStackTrace();
