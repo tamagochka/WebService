@@ -1,5 +1,7 @@
 package my.tamagochka.dbService;
 
+import my.tamagochka.dbService.DAO.UsersDAO;
+import my.tamagochka.dbService.dataSets.UsersDataSet;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.sql.Connection;

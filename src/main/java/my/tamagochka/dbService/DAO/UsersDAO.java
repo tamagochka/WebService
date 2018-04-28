@@ -12,7 +12,7 @@ public class UsersDAO {
 
     public UsersDAO(Connection connection) { this.executor = new Executor(connection); }
 
-    public UsersDataSet get(long id) throw SQLException {
+    public UsersDataSet get(long id) throws SQLException {
         return executor.execQuery("SELECT * FROM users WHERE id=" + id, result -> {
            result.next();
            return new UsersDataSet(result.getLong(1), result.getString(2));
@@ -34,7 +34,7 @@ public class UsersDAO {
         executor.execUpdate("CREATE TABLE IF NOT EXIST users (id BIGINT AUTO_INCREMENT, user_name VARCHAR(30), PRIMARY KEY (id))");
     }
 
-    public void dropTable() {
+    public void dropTable() throws SQLException {
         executor.execUpdate("DROP TABLE users");
     }
 

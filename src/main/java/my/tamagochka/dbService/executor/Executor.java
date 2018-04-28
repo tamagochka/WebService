@@ -13,7 +13,7 @@ public class Executor {
         this.connection = connection;
     }
 
-    public execUpdate(String update) throws SQLException {
+    public void execUpdate(String update) throws SQLException {
         Statement state = connection.createStatement();
         state.execute(update);
         state.close();

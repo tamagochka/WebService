@@ -2,6 +2,9 @@ package my.tamagochka.main;
 
 import my.tamagochka.accounts.AccountService;
 import my.tamagochka.accounts.UserProfile;
+import my.tamagochka.dbService.DBException;
+import my.tamagochka.dbService.DBService;
+import my.tamagochka.dbService.dataSets.UsersDataSet;
 import my.tamagochka.servlets.SessionsServlet;
 import my.tamagochka.servlets.UsersServlet;
 import org.eclipse.jetty.server.Handler;
