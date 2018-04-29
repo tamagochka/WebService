@@ -3,7 +3,13 @@ package my.tamagochka.dbService;
 import my.tamagochka.dbService.DAO.UsersDAO;
 import my.tamagochka.dbService.dataSets.UsersDataSet;
 import org.h2.jdbcx.JdbcDataSource;
+import org.hibernate.*;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import sun.security.krb5.Config;
 
+import javax.imageio.spi.ServiceRegistry;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -11,41 +17,41 @@ import java.sql.SQLException;
 
 public class DBService {
 
-    private final Connection connection;
+    private static final String hibernate_show_sql = "true";
+    private static final String hibernate_hbm2ddl_auto = "create";
+
+    private final SessionFactory sessionFactory;
 
     public DBService() {
-        this.connection = getH2Connection();
-        //this.connection = getMySQLConnection();
+        Configuration config = getH2Configuration();
+        sessionFactory = createSessionFactory();
     }
 
     public UsersDataSet getUser(long id) throws DBException {
         try {
-            return (new UsersDAO(connection).get(id));
-        } catch(SQLException e) {
+            Session session = sessionFactory.openSession();
+            UsersDAO dao = new UsersDAO(session);
+            UsersDataSet dataSet = dao.get(id);
+            session.close();
+            return dataSet;
+        } catch(HibernateException e) {
             throw new DBException(e);
         }
     }
 
     public long addUser(String name) throws DBException {
         try {
-            connection.setAutoCommit(false);
-            UsersDAO dao = new UsersDAO(connection);
-            dao.createTable();
-            dao.insertUser(name);
-            connection.commit();
-            return dao.getUserId(name);
-        } catch(SQLException e) {
-            try {
-                connection.rollback();
-            } catch(SQLException ignore) {}
+            Session session = sessionFactory.openSession();
+            Transaction tr = session.beginTransaction();
+            UsersDAO dao = new UsersDAO(session);
+            long id = dao.insertUser(name);
+            tr.commit();
+            return id;
+        } catch(HibernateException e) {
             throw new DBException(e);
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch(SQLException ignore) {}
         }
     }
-
+/*
     public void cleanUp() throws DBException {
         UsersDAO dao = new UsersDAO(connection);
         try {
@@ -54,8 +60,8 @@ public class DBService {
             throw new DBException(e);
         }
     }
-
-    public void printConnectInfo() {
+*/
+/*    public void printConnectInfo() {
         try {
             System.out.printf("DB name: " + connection.getMetaData().getDatabaseProductName());
             System.out.printf("DB version: " + connection.getMetaData().getDatabaseProductVersion());
@@ -64,37 +70,39 @@ public class DBService {
         } catch(SQLException e) {
             e.printStackTrace();
         }
-    }
-    public static Connection getMySQLConnection() {
-        try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
-            StringBuilder url = new StringBuilder();
-            url
-                    .append("jdbc:mysql://")
-                    .append("localhost:")
-                    .append("3306/")
-                    .append("db_example?serverTimezone=UTC&")
-                    .append("user=root&")
-                    .append("password=a1010a");
-            System.out.print(url);
-            return DriverManager.getConnection(url.toString());
-        } catch(SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+    }*/
+
+    public static Configuration getMySQLConfiguration() {
+        Configuration config = new Configuration();
+        config.addAnnotatedClass(UsersDataSet.class);
+        config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        config.setProperty("hibernate.connection.drive_class", "com.mysql.jdbc.Driver");
+        config.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/db_example");
+        config.setProperty("hibernate.connection.username", "root");
+        config.setProperty("hibernate.connection.password", "123");
+        config.setProperty("hibernate.show_sql", hibernate_show_sql);
+        config.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
+        return config;
     }
 
-    public static Connection getH2Connection() {
-        try {
-            String url = "jdbc:h2:./h2db";
-            String name = "test";
-            String pass = "test";
+    public static Configuration getH2Configuration() {
+        Configuration config = new Configuration();
+        config.addAnnotatedClass(UsersDataSet.class);
+        config.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        config.setProperty("hibernate.connection.drive_class", "org.h2.Driver");
+        config.setProperty("hibernate.connection.url", "jdbc:h2:./h2db");
+        config.setProperty("hibernate.connection.username", "root");
+        config.setProperty("hibernate.connection.password", "123");
+        config.setProperty("hibernate.show_sql", hibernate_show_sql);
+        config.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
+        return config;
+    }
 
-            return DriverManager.getConnection(url, name, pass);
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private static SessionFactory createSessionFactory(Configuration config) {
+        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+        builder.applySettings(config.getProperties());
+        StandardServiceRegistry serviceRegistry = builder.build();
+        return config.buildSessionFactory(serviceRegistry);
     }
 
 }

@@ -44,7 +44,6 @@ public class Main {
             UsersDataSet dataSet = dbService.getUser(userId);
             System.out.println("User data set: " + dataSet);
 
-            dbService.cleanUp();
         } catch(DBException e) {
             e.printStackTrace();
         }
