@@ -2,17 +2,16 @@ package my.tamagochka.dbService;
 
 import my.tamagochka.dbService.DAO.UsersDAO;
 import my.tamagochka.dbService.dataSets.UsersDataSet;
-import org.h2.jdbcx.JdbcDataSource;
-import org.hibernate.*;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import sun.security.krb5.Config;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 
-import javax.imageio.spi.ServiceRegistry;
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBService {
@@ -23,8 +22,9 @@ public class DBService {
     private final SessionFactory sessionFactory;
 
     public DBService() {
-        Configuration config = getH2Configuration();
-        sessionFactory = createSessionFactory();
+        //Configuration config = getH2Configuration();
+        Configuration config = getMySQLConfiguration();
+        sessionFactory = createSessionFactory(config);
     }
 
     public UsersDataSet getUser(long id) throws DBException {
@@ -46,31 +46,22 @@ public class DBService {
             UsersDAO dao = new UsersDAO(session);
             long id = dao.insertUser(name);
             tr.commit();
+            session.close();
             return id;
         } catch(HibernateException e) {
             throw new DBException(e);
         }
     }
-/*
-    public void cleanUp() throws DBException {
-        UsersDAO dao = new UsersDAO(connection);
-        try {
-            dao.dropTable();
-        } catch(SQLException e) {
-            throw new DBException(e);
-        }
-    }
-*/
-/*    public void printConnectInfo() {
-        try {
+
+    public void printConnectInfo() {
+        Session session = sessionFactory.openSession();
+        session.doWork(connection -> {
             System.out.printf("DB name: " + connection.getMetaData().getDatabaseProductName());
             System.out.printf("DB version: " + connection.getMetaData().getDatabaseProductVersion());
             System.out.println("Driver: " + connection.getMetaData().getDriverName());
             System.out.println("Autocommit: " + connection.getAutoCommit());
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-    }*/
+        });
+    }
 
     public static Configuration getMySQLConfiguration() {
         Configuration config = new Configuration();
@@ -86,10 +77,11 @@ public class DBService {
     }
 
     public static Configuration getH2Configuration() {
+
         Configuration config = new Configuration();
         config.addAnnotatedClass(UsersDataSet.class);
         config.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        config.setProperty("hibernate.connection.drive_class", "org.h2.Driver");
+        config.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
         config.setProperty("hibernate.connection.url", "jdbc:h2:./h2db");
         config.setProperty("hibernate.connection.username", "root");
         config.setProperty("hibernate.connection.password", "123");
@@ -103,6 +95,10 @@ public class DBService {
         builder.applySettings(config.getProperties());
         StandardServiceRegistry serviceRegistry = builder.build();
         return config.buildSessionFactory(serviceRegistry);
+    }
+
+    public void closeConnection() {
+        sessionFactory.close();
     }
 
 }
