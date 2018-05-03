@@ -9,10 +9,6 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class DBService {
 
@@ -40,15 +36,18 @@ public class DBService {
     }
 
     public long addUser(String name) throws DBException {
+        Transaction tr = null;
         try {
             Session session = sessionFactory.openSession();
-            Transaction tr = session.beginTransaction();
+            tr = session.beginTransaction();
             UsersDAO dao = new UsersDAO(session);
-            long id = dao.insertUser(name);
+            dao.insertUser(name);
+            long id = dao.getUserId(name);
             tr.commit();
             session.close();
             return id;
         } catch(HibernateException e) {
+            tr.rollback();
             throw new DBException(e);
         }
     }
@@ -61,16 +60,17 @@ public class DBService {
             System.out.println("Driver: " + connection.getMetaData().getDriverName());
             System.out.println("Autocommit: " + connection.getAutoCommit());
         });
+        session.close();
     }
 
     public static Configuration getMySQLConfiguration() {
         Configuration config = new Configuration();
         config.addAnnotatedClass(UsersDataSet.class);
-        config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
         config.setProperty("hibernate.connection.drive_class", "com.mysql.jdbc.Driver");
-        config.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/db_example");
+        config.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/db_example?serverTimezone=UTC");
         config.setProperty("hibernate.connection.username", "root");
-        config.setProperty("hibernate.connection.password", "123");
+        config.setProperty("hibernate.connection.password", "a1010a");
         config.setProperty("hibernate.show_sql", hibernate_show_sql);
         config.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
         return config;
