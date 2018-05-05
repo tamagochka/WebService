@@ -36,9 +36,10 @@ public class DBService {
     }
 
     public long addUser(String name) throws DBException {
+        Session session = null;
         Transaction tr = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             tr = session.beginTransaction();
             UsersDAO dao = new UsersDAO(session);
             dao.insertUser(name);
