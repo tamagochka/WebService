@@ -2,12 +2,9 @@ package my.tamagochka.main;
 
 import my.tamagochka.accounts.AccountService;
 import my.tamagochka.accounts.UserProfile;
-import my.tamagochka.servlets.SessionsServlet;
-import my.tamagochka.servlets.UsersServlet;
-import org.eclipse.jetty.server.Handler;
+import my.tamagochka.servlets.SignInServlet;
+import my.tamagochka.servlets.SignUpServlet;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -19,8 +16,8 @@ public class Main {
         accountService.addNewUser(new UserProfile("test"));
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/signup");
-        context.addServlet(new ServletHolder(new SessionsServlet(accountService)), "/signin");
+        context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
+        context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
 
         Server server = new Server(8080);
         server.setHandler(context);

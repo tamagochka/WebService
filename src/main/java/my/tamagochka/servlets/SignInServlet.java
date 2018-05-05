@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class SessionsServlet extends HttpServlet {
+public class SignInServlet extends HttpServlet {
 
     private final AccountService accountService;
 
-    public SessionsServlet(AccountService accountService) { this.accountService = accountService; }
+    public SignInServlet(AccountService accountService) { this.accountService = accountService; }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("login");
