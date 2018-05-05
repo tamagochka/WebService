@@ -9,6 +9,7 @@
             <property name="hibernate.connection.url" value="jdbc:h2:./h2db"/>
             <property name="hibernate.connection.username" value="test"/>
             <property name="hibernate.connection.passwword" value="test"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

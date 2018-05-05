@@ -3,7 +3,7 @@ package my.tamagochka.dbService;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "users")
 public class UsersDataSet {
 
     @Id
@@ -18,7 +18,6 @@ public class UsersDataSet {
     public UsersDataSet() {}
 
     public UsersDataSet(String login, String password) {
-        this.id = -1;
         this.login = login;
         this.password = password;
     }
