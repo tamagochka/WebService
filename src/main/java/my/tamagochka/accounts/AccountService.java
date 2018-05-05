@@ -1,28 +1,23 @@
 package my.tamagochka.accounts;
 
-import java.util.HashMap;
-import java.util.Map;
+import my.tamagochka.dbService.DBService;
+import my.tamagochka.dbService.UsersDataSet;
 
 public class AccountService {
 
-    private final Map<String, UserProfile> loginToProfile; // bind user login to user profile
-    private final Map<String, UserProfile> sessionToProfile; // bind session id to user profile
+    private final DBService dbService;
 
     public AccountService() {
-        loginToProfile = new HashMap<>();
-        sessionToProfile = new HashMap<>();
+        dbService = new DBService();
     }
 
-    public void addNewUser(UserProfile userProfile) { loginToProfile.put(userProfile.getLogin(), userProfile); } // added new user to map loginToProfile
-
-    public UserProfile getUserByLogin(String login) { return loginToProfile.get(login); } // returned user profile by login
-
-    public UserProfile getUserBySession(String session) { return sessionToProfile.get(session); } // returned user profile by session id
-
-    public void addSession(String session, UserProfile userProfile) { // register new session
-        sessionToProfile.put(session, userProfile);
+    public void addNewUser(UsersDataSet userProfile) {
+        dbService.addUser(userProfile);
     }
 
-    public void deleteSession(String session) { sessionToProfile.remove(session); } // remove old session
-
+    public UsersDataSet getUserByLogin(String login) {
+        if (dbService.getUsersByLogin(login).isEmpty()) return null;
+        UsersDataSet result = dbService.getUsersByLogin(login).get(0);
+        return result;
+    }
 }

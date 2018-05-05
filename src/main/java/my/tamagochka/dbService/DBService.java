@@ -28,6 +28,14 @@ public class DBService {
         em.close();
     }
 
+    public void addUser(UsersDataSet user) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(user);
+        em.getTransaction().commit();
+        em.close();
+    }
+
     public List<UsersDataSet> getUsersByLogin(String login) {
         EntityManager em = entityManagerFactory.createEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();

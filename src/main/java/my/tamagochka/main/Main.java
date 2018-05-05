@@ -1,7 +1,6 @@
 package my.tamagochka.main;
 
 import my.tamagochka.accounts.AccountService;
-import my.tamagochka.accounts.UserProfile;
 import my.tamagochka.servlets.SignInServlet;
 import my.tamagochka.servlets.SignUpServlet;
 import org.eclipse.jetty.server.Server;
@@ -12,8 +11,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         AccountService accountService = new AccountService();
-        accountService.addNewUser(new UserProfile("admin"));
-        accountService.addNewUser(new UserProfile("test"));
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");

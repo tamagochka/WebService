@@ -1,8 +1,7 @@
 package my.tamagochka.servlets;
 
-import com.google.gson.Gson;
 import my.tamagochka.accounts.AccountService;
-import my.tamagochka.accounts.UserProfile;
+import my.tamagochka.dbService.UsersDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,16 +23,13 @@ public class SignInServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        UserProfile profile = accountService.getUserByLogin(login);
-        if(profile == null || !profile.getPass().equals(pass)) {
+        UsersDataSet profile = accountService.getUserByLogin(login);
+        if(profile == null || !profile.getPassword().equals(pass)) {
             response.setContentType("text/html;charset=utf-8");
             response.getWriter().println("Unauthorized");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        accountService.addSession(request.getSession().getId(), profile);
-        Gson gson = new Gson();
-        String json = gson.toJson(profile);
         response.setContentType("text/html;charset=utf-8");
         response.getWriter().println("Authorized: " + login);
         response.setStatus(HttpServletResponse.SC_OK);
