@@ -24,7 +24,7 @@ public class ChatWebSocket {
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        chatService.add(this);
+        chatService.remove(this);
     }
 
     @OnWebSocketMessage

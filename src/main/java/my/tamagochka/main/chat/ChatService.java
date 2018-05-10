@@ -25,4 +25,6 @@ public class ChatService {
     public void add(ChatWebSocket webSocket) {
         webSockets.add(webSocket);
     }
+
+    public void remove(ChatWebSocket webSocket) { webSockets.remove(webSocket); }
 }
