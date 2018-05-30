@@ -1,9 +1,10 @@
 package my.tamagochka.main;
 
-import my.tamagochka.accounts.AccountService;
-import my.tamagochka.accounts.UserProfile;
-import my.tamagochka.servlets.SessionsServlet;
-import my.tamagochka.servlets.UsersServlet;
+import my.tamagochka.accountServer.AccountServer;
+import my.tamagochka.accountServer.AccountServerController;
+import my.tamagochka.accountServer.AccountServerControllerMBean;
+import my.tamagochka.accountServer.AccountServerI;
+import my.tamagochka.servlets.HomePageServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
