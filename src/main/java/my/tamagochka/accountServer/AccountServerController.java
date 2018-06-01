@@ -8,10 +8,12 @@ public class AccountServerController implements AccountServerControllerMBean {
         this.accountServer = accountServer;
     }
 
+/*
     @Override
     public int getUsers() {
         return accountServer.getUsersCount();
     }
+*/
 
     @Override
     public int getUsersLimit() {
