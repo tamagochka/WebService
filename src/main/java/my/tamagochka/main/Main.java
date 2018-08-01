@@ -5,8 +5,6 @@ import my.tamagochka.accountServer.AccountServerController;
 import my.tamagochka.accountServer.AccountServerControllerMBean;
 import my.tamagochka.accountServer.AccountServerI;
 import my.tamagochka.servlets.HomePageServlet;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -16,32 +14,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.util.stream.Stream;
 
 public class Main {
 
-//    static final Logger logger = LogManager.getLogger(Main.class.getName());
-
     public static void main(String[] args) throws Exception {
 
-/*
-        if(args.length != 1) {
-            logger.error("Use port as the first argument");
-            System.exit(1);
-        }
-*/
-
-//        String portString = args[0];
-//        int port = Integer.valueOf(portString);
         int port = 8080;
-
-//        logger.info("Starting at http://127.0.0.1:" + portString);
-
-
 
         AccountServerI accountServer = new AccountServer(10);
 
