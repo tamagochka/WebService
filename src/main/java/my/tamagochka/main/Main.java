@@ -1,14 +1,9 @@
 package my.tamagochka.main;
 
-import my.tamagochka.accountServer.AccountServer;
-import my.tamagochka.accountServer.AccountServerController;
-import my.tamagochka.accountServer.AccountServerControllerMBean;
-import my.tamagochka.accountServer.AccountServerI;
+import my.tamagochka.resourceServer.ResourceServer;
+import my.tamagochka.resourceServer.ResourceServerMBean;
 import my.tamagochka.servlets.HomePageServlet;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -22,24 +17,18 @@ public class Main {
 
         int port = 8080;
 
-        AccountServerI accountServer = new AccountServer(10);
+        ResourceServerMBean resourceServer = new ResourceServer();
 
-        AccountServerControllerMBean serverStatistics = new AccountServerController(accountServer);
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName name = new ObjectName("Admin:type=AccountServerController");
-        mbs.registerMBean(serverStatistics, name);
+        ObjectName name = new ObjectName("Admin:type=ResourceServerController");
+        mbs.registerMBean(resourceServer, name);
 
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new HomePageServlet(accountServer)), HomePageServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(new HomePageServlet((ResourceServer) resourceServer)), HomePageServlet.PAGE_URL);
 
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setResourceBase("static");
 
-        HandlerList handlerList = new HandlerList();
-        handlerList.setHandlers(new Handler[] {resourceHandler, context});
-        server.setHandler(handlerList);
+        server.setHandler(context);
 
         server.start();
         java.util.logging.Logger.getGlobal().info("Server started");

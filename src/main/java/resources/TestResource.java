@@ -1,4 +1,4 @@
-package my.tamagochka.resources;
+package resources;
 
 public class TestResource {
     private String name;
