@@ -1,38 +1,126 @@
 package my.tamagochka.main;
 
-import my.tamagochka.resourceServer.ResourceServer;
-import my.tamagochka.resourceServer.ResourceServerMBean;
-import my.tamagochka.servlets.HomePageServlet;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import java.lang.management.ManagementFactory;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.SocketChannel;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    private static Map<SocketChannel, Thread> threads = new HashMap<>();
 
-        int port = 8080;
+    private static class Sender implements Runnable {
 
-        ResourceServerMBean resourceServer = new ResourceServer();
+        private SocketChannel sc;
+        private Server server;
 
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName name = new ObjectName("Admin:type=ResourceServerController");
-        mbs.registerMBean(resourceServer, name);
+        public Sender(SocketChannel sc, Server server) {
+            this.sc = sc;
+            this.server = server;
+        }
 
-        Server server = new Server(port);
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new HomePageServlet((ResourceServer) resourceServer)), HomePageServlet.PAGE_URL);
+        @Override
+        public void run() {
+            for(int i = 0; i < 100000; i++) {
+                if(Thread.interrupted()) {
+                    System.out.println("!!!!!thread interrupted!");
+                    break;
+                }
+                String str = Integer.toString(i);
+                server.send(sc, str.getBytes());
+            }
+            server.close(sc);
+        }
+
+    }
 
 
-        server.setHandler(context);
+    public static void main(String[] args) {
+        new NIOServer().run();
+/*
+        Server server = new Server(5050, 100);
+        Thread serverThread = new Thread(server);
+*/
 
-        server.start();
-        java.util.logging.Logger.getGlobal().info("Server started");
-        server.join();
+
+
+        // работающий код отправки сообщений подключившемуся клиенту
+
+/*
+        server.onAccept(sc -> {
+            Sender sender = new Sender(sc, server);
+            Thread thread = new Thread(sender);
+            threads.put(sc, thread);
+            thread.start();
+        });
+        server.onWriteException((sc, notReceived, notSended) -> {
+            server.halt(sc);
+        });
+        server.onSendQueueException((sc, notReceived, notSended) -> {
+            threads.get(sc).interrupt();
+        });
+*/
+
+
+
+        // работающий код для приема сообщений через события
+/*
+        server.onRecieve((sc, data) -> {
+            try {
+                System.out.println(((InetSocketAddress) sc.getRemoteAddress()).getAddress() + ":" + ((InetSocketAddress) sc.getRemoteAddress()).getPort() + " - " + new String(data));
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        server.onReadException((sc, notReceived, notSended) -> {
+            System.out.printf("suck my dick!");
+            server.halt(sc);
+        });
+*/
+
+
+
+
+
+/*
+        serverThread.start();
+
+
+        try {
+            serverThread.join();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+*/
+
+/*
+      // работающий код для приема сообщений от клиента
+        while(true) {
+            server.waitData();
+            int n = 0;
+            for(SocketChannel sc : server.channels()) {
+                n++;
+                byte data[] = server.receive(sc);
+                while(data != null) {
+                    System.out.println(n + " - " + new String(data));
+                    data = server.receive(sc);
+                }
+            }
+
+
+        }
+*/
+
+
+
+
+
+
+
+
+
 
 
     }
